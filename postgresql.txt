@@ -1,0 +1,303 @@
+POSTGRESQL Workout
+=========================================================================================================================================================================
+
+1.Create a table employee, with the following fields and constraints added to each field
+id (primary key)
+name (not null)
+department (like marketing, sales, development, testing, devops etc) (not null)
+branch (use any city name)  (a null field)
+salary ( a five-digit value) ( a not null field with default value 0)
+
+
+training=# create table employee (id serial primary key, name varchar(100) not null,department varchar(100) not null, branch varchar(50) null, salary int not null default 0 check (salary between 0 and 99999));
+CREATE TABLE
+training=# 
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+2.insert at least 10 records into the employee table with relevant data.
+
+training=# select * from employee;
+ id |  name   | department  |       branch       | salary 
+----+---------+-------------+--------------------+--------
+  1 | joe     | sales       | kochi              |  60000
+  2 | shibu   | deelopment  | kochi              |  40000
+  3 | ani     | testing     | kozhikode          |  30000
+  4 | manu    | devops      | kozhikode          |  50000
+  5 | sasi    | sales       | thiruvananthapuram |  45000
+  6 | janu    | marketing   | newyork            |  55000
+  7 | jinu    | marketing   | tokyo              |  45000
+  8 | jini    | marketing   | tokyo              |  60000
+  9 | giri    | marketing   | newyork            |  30000
+ 10 | balu    | development | kochi              |  50000
+ 11 | binu    | devops      | kochi              |  50000
+ 12 | susi    | devops      | kozhikode          |  70000
+ 13 | tinu    | marketing   | kochi              |  68000
+ 14 | chinchu | marketing   | thiruvananthapuram |  40000
+(14 rows)
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+3.Add the field email, and phone_number with null constraint. (Phone Number can be a string)
+
+training=# 
+training=# alter table employee add column email varchar(50) null ,add column phone_number varchar(20) null;
+ALTER TABLE
+
+training=# 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4.Modify the field salary to remove default constraints added to it.
+
+training=# alter table employee alter column salary drop default;
+ALTER TABLE
+training=# 
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+5.Update the fields phone_number and email for the employee having a salary between 10100 and 50045 and their department should be either marketing or testing
+
+training=# update employee set phone_number = '9544334329', email='testemail@gmail.com'  where (salary>10100 and salary<50045) and department in ('marketing' ,'testing');
+UPDATE 4
+training=# select * from employee;
+ id |  name   | department  |       branch       | salary |        email        | phone_number 
+----+---------+-------------+--------------------+--------+---------------------+--------------
+  1 | joe     | sales       | kochi              |  60000 |                     | 
+  2 | shibu   | deelopment  | kochi              |  40000 |                     | 
+  4 | manu    | devops      | kozhikode          |  50000 |                     | 
+  5 | sasi    | sales       | thiruvananthapuram |  45000 |                     | 
+  6 | janu    | marketing   | newyork            |  55000 |                     | 
+  8 | jini    | marketing   | tokyo              |  60000 |                     | 
+ 10 | balu    | development | kochi              |  50000 |                     | 
+ 11 | binu    | devops      | kochi              |  50000 |                     | 
+ 12 | susi    | devops      | kozhikode          |  70000 |                     | 
+ 13 | tinu    | marketing   | kochi              |  68000 |                     | 
+  3 | ani     | testing     | kozhikode          |  30000 | testemail@gmail.com | 9544334329
+  7 | jinu    | marketing   | tokyo              |  45000 | testemail@gmail.com | 9544334329
+  9 | giri    | marketing   | newyork            |  30000 | testemail@gmail.com | 9544334329
+ 14 | chinchu | marketing   | thiruvananthapuram |  40000 | testemail@gmail.com | 9544334329
+
+training=# update employee set email = 'ani@gmail.com' where name='ani';
+UPDATE 1
+training=# update employee set email = 'jinu@gmail.com' where name='jinu';
+UPDATE 1
+training=# update employee set email = 'giri@gmail.com' where name='giri';
+UPDATE 1
+training=# update employee set email = 'chinchu@gmail.com' where name='chinchu';
+UPDATE 1
+training=#
+----------------------------------------------------------------------------------------------------------------------------------------
+
+6.Update email for the rest of the employees.
+
+training=# update employee set email='tinu@gmail.com' where id = 13;
+UPDATE 1
+training=# update employee set email='susi@gmail.com' where id = 12;
+UPDATE 1
+training=# update employee set email='binu@gmail.com' where id = 11;
+UPDATE 1
+training=# update employee set email='balu@gmail.com' where id = 10;
+UPDATE 1
+training=# update employee set email='jini@gmail.com' where id = 8;
+UPDATE 1
+training=# update employee set email='jinu@gmail.com' where id = 6;
+UPDATE 1
+training=# update employee set email='sasi@gmail.com' where id = 5;
+UPDATE 1
+training=# update employee set email='manu@gmail.com' where id = 4;
+UPDATE 1
+training=# update employee set email='shibu@gmail.com' where id = 2;
+UPDATE 1
+training=# update employee set email='joe@gmail.com' where id = 1;
+-------------------------------------------------------------------------------------
+7.Modify the field email to add a UNIQUE constraint to it.
+
+training=# alter table employee add constraint unique_constraint_email unique(email);
+ERROR:  could not create unique index "unique_constraint_email"
+DETAIL:  Key (email)=(testemail@gmail.com) is duplicated.
+-------------------------------------------------------------------------------------
+training=# update employee set email='ani@gmail.com' where id=3;
+UPDATE 1
+training=# update employee set email='jinu@gmail.com' where id=7;
+UPDATE 1
+training=# update employee set email='giri@gmail.com' where id=9;
+UPDATE 1
+training=# update employee set email='chinchu@gmail.com' where id=14;
+UPDATE 1
+training=# 
+------------------------------------------------------------------------------------
+
+
+training=# alter table employee add constraint unique_constraint_email unique(email);
+ALTER TABLE
+training=# 
+
+------------------------------------------------------------------------------------
+8.Select all the employees
+
+training=# select * from employee;
+ id |  name   | department  |       branch       | salary |       email       | phone_number 
+----+---------+-------------+--------------------+--------+-------------------+--------------
+ 13 | tinu    | marketing   | kochi              |  68000 | tinu@gmail.com    | 
+ 12 | susi    | devops      | kozhikode          |  70000 | susi@gmail.com    | 
+ 11 | binu    | devops      | kochi              |  50000 | binu@gmail.com    | 
+ 10 | balu    | development | kochi              |  50000 | balu@gmail.com    | 
+  8 | jini    | marketing   | tokyo              |  60000 | jini@gmail.com    | 
+  5 | sasi    | sales       | thiruvananthapuram |  45000 | sasi@gmail.com    | 
+  4 | manu    | devops      | kozhikode          |  50000 | manu@gmail.com    | 
+  2 | shibu   | deelopment  | kochi              |  40000 | shibu@gmail.com   | 
+  1 | joe     | sales       | kochi              |  60000 | joe@gmail.com     | 
+  3 | ani     | testing     | kozhikode          |  30000 | ani@gmail.com     | 9544334329
+  7 | jinu    | marketing   | tokyo              |  45000 | jinu@gmail.com    | 9544334329
+  9 | giri    | marketing   | newyork            |  30000 | giri@gmail.com    | 9544334329
+ 14 | chinchu | marketing   | thiruvananthapuram |  40000 | chinchu@gmail.com | 9544334329
+  6 | janu    | marketing   | newyork            |  55000 | janu@gmail.com    | 
+(14 rows)
+
+training=# 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+9.Select id, name, email from employees having a salary greater than or equal to 45000, the department should contain the string ‘maRKeT’, and the branch can be ‘Being’, ‘Tokyo’ or ‘New York’.
+Select only the first 5 records in the descending order of salary. (You can add new records into the employee table if necessary)
+
+training=# select id,name,email from employee where salary>=45000 and department ilike '%maRKet%' and branch in ('being','tokyo', 'newyork') order by salary desc limit 5;
+ id |  name   |       email       
+----+---------+-------------------
+ 17 | mahesh  | mahesh@gmail.com
+  8 | jini    | jini@gmail.com
+ 16 | sruthy  | sruthy@gmail.com
+  6 | janu    | janu@gmail.com
+ 15 | saranya | saranya@gmail.com
+(5 rows)
+
+training=#
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+10.Select all the employees having phone_number null;
+
+training=# select * from employee where phone_number is null;
+ id |  name   | department  |       branch       | salary |       email       | phone_number 
+----+---------+-------------+--------------------+--------+-------------------+--------------
+ 13 | tinu    | marketing   | kochi              |  68000 | tinu@gmail.com    | 
+ 12 | susi    | devops      | kozhikode          |  70000 | susi@gmail.com    | 
+ 11 | binu    | devops      | kochi              |  50000 | binu@gmail.com    | 
+ 10 | balu    | development | kochi              |  50000 | balu@gmail.com    | 
+  8 | jini    | marketing   | tokyo              |  60000 | jini@gmail.com    | 
+  5 | sasi    | sales       | thiruvananthapuram |  45000 | sasi@gmail.com    | 
+  4 | manu    | devops      | kozhikode          |  50000 | manu@gmail.com    | 
+  2 | shibu   | deelopment  | kochi              |  40000 | shibu@gmail.com   | 
+  1 | joe     | sales       | kochi              |  60000 | joe@gmail.com     | 
+  6 | janu    | marketing   | newyork            |  55000 | janu@gmail.com    | 
+ 16 | sruthy  | marketing   | newyork            |  60000 | sruthy@gmail.com  | 
+ 17 | mahesh  | marketing   | tokyo              |  70000 | mahesh@gmail.com  | 
+ 15 | saranya | marketing   | being              |  51000 | saranya@gmail.com | 
+(13 rows)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+11.Find the no. of employees in each department with a count greater than 3. Display in the ascending order of the department.
+
+training=# select department, count(name) as No_of_Employees from employee group by department having count(name) > 3 order by department asc;
+ department | no_of_employees 
+------------+-----------------
+ devops     |               4
+ marketing  |               9
+(2 rows)
+
+training=# 
+----------------------------------------------------------------------------------------------------------------------------------------------
+12.Find the maximum, minimum, and average salary in each department.
+
+training=# select department, max(salary) as Max_salary, min(salary) as Min_salary, avg(salary) as Avg_salary from employee group by department;
+ department  | max_salary | min_salary |     avg_salary     
+-------------+------------+------------+--------------------
+ deelopment  |      40000 |      40000 | 40000.000000000000
+ devops      |      70000 |      50000 | 60000.000000000000
+ testing     |      30000 |      30000 | 30000.000000000000
+ development |      50000 |      50000 | 50000.000000000000
+ marketing   |      70000 |      30000 | 53222.222222222222
+ sales       |      60000 |      45000 | 52500.000000000000
+(6 rows)
+
+training=# 
+-----------------------------------------------------------------------------------------------------------------------------------------------
+13.Find distinct emails from the employee table.
+
+training=# select distinct email from employee;
+       email       
+-------------------
+ ani@gmail.com
+ jini@gmail.com
+ saranya@gmail.com
+ manjesh@gmail.com
+ chinchu@gmail.com
+ balu@gmail.com
+ janu@gmail.com
+ giri@gmail.com
+ shibu@gmail.com
+ manu@gmail.com
+ joe@gmail.com
+ binu@gmail.com
+ sasi@gmail.com
+ susi@gmail.com
+ mahesh@gmail.com
+ tinu@gmail.com
+ sruthy@gmail.com
+ jinu@gmail.com
+(18 rows)
+
+training=# 
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+14.Find the no. of employees in each department whose name starts with the letter ‘j’.
+
+training=#  select department, count(name) as No_of_employee from employee where name ilike 'j%' group by department;
+ department | no_of_employee 
+------------+----------------
+ marketing  |              3
+ sales      |              1
+(2 rows)
+
+training=# 
+---------------------------------------------------------------------------------------------------------------------------------------
+15.Delete the employee records with no phone_number and should belong to the city ‘Tokyo’. 
+
+training=# select branch, count(name) as number_of_employees,count(phone_number) as count_of_phone from employee  group by branch;
+       branch       | number_of_employees | count_of_phone 
+--------------------+---------------------+----------------
+ tokyo              |                   4 |              1
+ thiruvananthapuram |                   2 |              1
+ kochi              |                   5 |              0
+ being              |                   1 |              0
+ kozhikode          |                   3 |              1
+ newyork            |                   3 |              1
+(6 rows)
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+ 16.Delete the employee records with no phone_number and should belong to the city ‘Tokyo’. 
+ 
+ 
+training=# delete from employee where phone_number is null and branch='tokyo';
+DELETE 3
+training=# select * from employee;
+ id |  name   | department  |       branch       | salary |       email       | phone_number 
+----+---------+-------------+--------------------+--------+-------------------+--------------
+ 13 | tinu    | marketing   | kochi              |  68000 | tinu@gmail.com    | 
+ 12 | susi    | devops      | kozhikode          |  70000 | susi@gmail.com    | 
+ 11 | binu    | devops      | kochi              |  50000 | binu@gmail.com    | 
+ 10 | balu    | development | kochi              |  50000 | balu@gmail.com    | 
+  5 | sasi    | sales       | thiruvananthapuram |  45000 | sasi@gmail.com    | 
+  4 | manu    | devops      | kozhikode          |  50000 | manu@gmail.com    | 
+  2 | shibu   | deelopment  | kochi              |  40000 | shibu@gmail.com   | 
+  1 | joe     | sales       | kochi              |  60000 | joe@gmail.com     | 
+  3 | ani     | testing     | kozhikode          |  30000 | ani@gmail.com     | 9544334329
+  7 | jinu    | marketing   | tokyo              |  45000 | jinu@gmail.com    | 9544334329
+  9 | giri    | marketing   | newyork            |  30000 | giri@gmail.com    | 9544334329
+ 14 | chinchu | marketing   | thiruvananthapuram |  40000 | chinchu@gmail.com | 9544334329
+  6 | janu    | marketing   | newyork            |  55000 | janu@gmail.com    | 
+ 16 | sruthy  | marketing   | newyork            |  60000 | sruthy@gmail.com  | 
+ 15 | saranya | marketing   | being              |  51000 | saranya@gmail.com | 
+(15 rows)
+
+training=# 
+
+
+
+
+
+ 
+ 
+
